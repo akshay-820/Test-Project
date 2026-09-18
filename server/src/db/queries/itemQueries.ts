@@ -4,7 +4,7 @@ import pool from "../index.js";
 
 export async function createItem(name: string, price: number, stock: number) {
     const query = `
-        INSERT INTO items
+        INSERT INTO items(name,price,stock)
         VALUES ($1,$2,$3)
         RETURNING id,name,price,stock;
     `;
