@@ -21,6 +21,16 @@ export async function getAllItems() {
     return result.rows;
 }
 
+export async function getItemDetails(id: string) {
+    const query = `
+        SELECT id,name,price,stock
+        FROM items
+        WHERE id = $1;
+    `;
+    const result = await pool.query(query, [id]);
+    return result.rows[0];
+}
+
 export async function removeItem(id: string) {
     const query = `
         DELETE FROM items
