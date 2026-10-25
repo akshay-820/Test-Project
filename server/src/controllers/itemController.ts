@@ -13,7 +13,7 @@ const addItemToCart = async (req: express.Request, res: express.Response) => {
             return res.status(400).json({ error: "Missing data" });
         }
 
-        const result = await createItem(name, price, stock);
+        const result = 0;
         return res.status(201).json({ result });
     } catch (err) {
         console.error("Error while adding item", err);
