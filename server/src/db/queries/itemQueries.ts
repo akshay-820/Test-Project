@@ -14,7 +14,7 @@ export async function createItem(name: string, price: number, stock: number) {
 
 export async function getAllItems() {
     const query = `
-        SELECT id,name,price,stock
+        SELECT id,name,price
         FROM items;
     `;
     const result = await pool.query(query);
