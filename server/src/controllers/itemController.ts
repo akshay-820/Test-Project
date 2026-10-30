@@ -1,9 +1,9 @@
 import express from "express";
 import {
+    createItem,
     getAllItems,
     getItemDetails,
-    removeItem,
-} from "../db/queries/itemQueries.js";
+    removeItem,} from "../db/queries/itemQueries.js";
 
 const addItemToCart = async (req: express.Request, res: express.Response) => {
     try {
@@ -12,12 +12,11 @@ const addItemToCart = async (req: express.Request, res: express.Response) => {
             return res.status(400).json({ error: "Missing data" });
         }
 
-        const result = 0;
-        return res.status(201).json({ result });
+        const result = await createItem(name, price, stock);
+        return res.status(201).json(result);
     } catch (err) {
         console.error("Error while adding item", err);
-        return res.status(500).json({ error: "Internal server error" });
-    }
+        return res.status(500).json({ error: "Internal server error" });    }
 };
 
 const getCartItems = async (req: express.Request, res: express.Response) => {
