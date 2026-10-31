@@ -75,3 +75,50 @@ export async function removeItem(id: string) {
     const result = await pool.query(query, [id]);
     return result.rows[0];
 }
+
+export async function updateItem(
+    id: string,
+    fields: { name?: string; price?: number; stock?: number },
+) {
+    const query = `
+        UPDATE items
+        SET name = COALESCE($1, name),
+            price = COALESCE($2, price),
+            stock = COALESCE($3, stock),
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $4
+        RETURNING id, name, price, stock, updated_at;
+    `;
+
+    const result = await pool.query(query, [
+        fields.name ?? null,
+        fields.price ?? null,
+        fields.stock ?? null,
+        id,
+    ]);
+    return result.rows[0];
+}
+
+export async function searchItemsByName(term: string) {
+    const query = `
+        SELECT id, name, price
+        FROM items
+        WHERE name ILIKE $1
+        ORDER BY name;
+    `;
+
+    const result = await pool.query(query, [`%${term}%`]);
+    return result.rows;
+}
+
+export async function getLowStockItems(threshold: number) {
+    const query = `
+        SELECT id, name, price, stock
+        FROM items
+        WHERE stock <= $1
+        ORDER BY stock ASC;
+    `;
+
+    const result = await pool.query(query, [threshold]);
+    return result.rows;
+}

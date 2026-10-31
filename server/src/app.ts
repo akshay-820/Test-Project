@@ -11,6 +11,10 @@ app.get("/", (req, res) => {
     res.send("Hello from server");
 });
 
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", uptime: process.uptime() });
+});
+
 app.listen(3333, () => {
     console.log("Server started");
 });
