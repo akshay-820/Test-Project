@@ -25,7 +25,7 @@ export async function createItem(name: string, price: number, stock: number) {
         `;
 
         const result = await pool.query(updateQuery, [
-            currentStock - stock,
+            currentStock + stock,
             price,
             name,
         ]);
