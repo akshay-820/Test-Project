@@ -10,19 +10,25 @@ export async function createItem(name: string, price: number, stock: number) {
     const existing = await pool.query(existingQuery, [name]);
 
     if (existing.rows.length > 0) {
+        const currentStock = existing.rows[0].stock;
+
         // Simulate some processing before updating
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         const updateQuery = `
             UPDATE items
-            SET stock = stock + $1,
+            SET stock = $1,
                 price = $2,
                 updated_at = CURRENT_TIMESTAMP
             WHERE name = $3
             RETURNING id, name, price, stock;
         `;
 
-        const result = await pool.query(updateQuery, [stock, price, name]);
+        const result = await pool.query(updateQuery, [
+            currentStock - stock,
+            price,
+            name,
+        ]);
 
         return result.rows[0];
     }
@@ -113,6 +119,6 @@ export async function getLowStockItems(threshold: number) {
         ORDER BY stock ASC;
     `;
 
-    const result = await pool.query(query, [threshold]);
+    const result = await pool.query(query);
     return result.rows;
 }
